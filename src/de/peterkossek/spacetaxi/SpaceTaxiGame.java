@@ -21,10 +21,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.LightNode;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.LightControl;
 import com.jme3.scene.shape.Box;
+import com.jme3.shader.VarType;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.shadow.PointLightShadowRenderer;
 
 /**
  * This is the SpaceTaxiGame Class of your Game. You should only do initialization here.
@@ -48,8 +52,8 @@ public class SpaceTaxiGame extends SimpleApplication implements AnalogListener, 
 
     private Geometry createFloor(BulletAppState bullet) {
         Box floorBox = new Box(10, 0.1f, 10);
-        Material floorMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        floorMat.setColor("Color", ColorRGBA.Gray);
+        Material floorMat = assetManager.loadMaterial("Materials/floor.j3m");
+        
         Geometry floor = new Geometry("floor", floorBox);
         floor.setMaterial(floorMat);
         floor.setLocalTranslation(0, -5f, 0);
@@ -104,8 +108,7 @@ public class SpaceTaxiGame extends SimpleApplication implements AnalogListener, 
         
         Box bodyBox = new Box(2, 0.5f, 2);
         Geometry spaceCraftBody = new Geometry("SpacecraftBody", bodyBox);
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        
+        Material material = assetManager.loadMaterial("Materials/ship.j3m");
         
         spaceCraftNode.attachChild(spaceCraftBody);
         Box legBox = new Box(0.1f, 1f, 0.1f);
@@ -179,14 +182,25 @@ public class SpaceTaxiGame extends SimpleApplication implements AnalogListener, 
         smoke.setParticlesPerSec(0);
 
         spaceCraftNode.attachChild(smoke);
+        fireLight = new PointLight();
+        fireLight.setColor(ColorRGBA.Yellow);
+        fireLight.setRadius(10);
+        LightNode ln = new LightNode("fireLight", fireLight);
+        ln.setLocalTranslation(0, -0.55f, 0);
+        spaceCraftNode.attachChild(ln);
         
-        fireLight = new PointLight(new Vector3f(0, -0.55f, 0), ColorRGBA.Yellow, 500);
-        fireLight.setEnabled(true);
+        fireShadow = new PointLightShadowRenderer(assetManager, 4096);
+        fireShadow.setLight(fireLight);
+        fireShadow.setEdgeFilteringMode(EdgeFilteringMode.PCF4);
+        
+        
+        fireLight.setEnabled(false);
         spaceCraftNode.addLight(fireLight);
     }
 
     private final Node spaceCraftNode = new Node("SpaceCraftNode");
     private PointLight fireLight;
+    private PointLightShadowRenderer fireShadow;
 
     @Override
     public void onAnalog(String name, float value, float tpf) {
@@ -207,6 +221,11 @@ public class SpaceTaxiGame extends SimpleApplication implements AnalogListener, 
             emitter.setParticlesPerSec(isPressed?100:0);
             
             fireLight.setEnabled(isPressed);
+            if (isPressed) {
+                viewPort.addProcessor(fireShadow);
+            } else {
+                viewPort.removeProcessor(fireShadow);
+            }
         }
     }
     

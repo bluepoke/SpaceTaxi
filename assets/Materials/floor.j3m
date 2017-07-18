@@ -1,0 +1,9 @@
+Material Floor : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        VertexLighting : true
+        UseMaterialColors : false
+        DiffuseMap : Repeat Textures/Terrain/Rock/Rock.PNG
+     }
+    AdditionalRenderState {
+    }
+}

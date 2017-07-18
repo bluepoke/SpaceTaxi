@@ -1,0 +1,12 @@
+Material Ship : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        Diffuse : 0.6 1.0 1.0 1.0
+        VertexLighting : true
+        UseMaterialColors : true
+        HardwareShadows : true
+        BackfaceShadows : true
+     }
+    AdditionalRenderState {
+      PointSprite Off
+    }
+}
