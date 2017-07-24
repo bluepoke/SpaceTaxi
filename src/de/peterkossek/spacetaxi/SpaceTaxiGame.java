@@ -15,6 +15,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
@@ -40,6 +41,8 @@ public class SpaceTaxiGame extends SimpleApplication {
         createSun();
         createFloor();
         spaceCraft();
+        Spatial spaceShip = assetManager.loadModel("Models/Spaceship_optimized.j3o");
+        rootNode.attachChild(spaceShip);
     }
 
     public BulletAppState getBullet() {
@@ -50,7 +53,7 @@ public class SpaceTaxiGame extends SimpleApplication {
 
 
     private Geometry createFloor() {
-        Box floorBox = new Box(10, 0.1f, 10);
+        Box floorBox = new Box(100, 0.1f, 100);
         Material floorMat = assetManager.loadMaterial("Materials/floor.j3m");
         
         Geometry floor = new Geometry("floor", floorBox);
